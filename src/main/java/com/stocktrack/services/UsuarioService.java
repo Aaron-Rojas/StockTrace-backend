@@ -13,7 +13,10 @@ import com.stocktrack.repository.UsuarioRepository;
 @Service
 public class UsuarioService {
     @Autowired
-    private UsuarioRepository usuarioRepository;    
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     private UsuarioDTO convertToDTO(Usuario usuario) {
         UsuarioDTO dto = new UsuarioDTO();
@@ -34,6 +37,34 @@ public class UsuarioService {
         Usuario u = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return convertToDTO(u);
+    }
+
+    public UsuarioDTO crearUsuario(UsuarioDTO usuarioDTO) {
+        Usuario usuario = new Usuario();
+        usuario.setNombreCompleto(usuarioDTO.getNombreCompleto());
+        usuario.setEmail(usuarioDTO.getEmail());
+        usuario.setRol(usuarioDTO.getRol());
+
+        // Encriptar contraseña
+        String encryptedPassword = passwordEncoder.encode(usuarioDTO.getPassword());
+        usuario.setPassword(encryptedPassword);
+
+        System.out.println("VERIFICACION ENCRIPTACION: Password original: " + usuarioDTO.getPassword());
+        System.out.println("VERIFICACION ENCRIPTACION: Password encriptado: " + encryptedPassword);
+
+        Usuario usuarioGuardado = usuarioRepository.save(usuario);
+        return convertToDTO(usuarioGuardado);
+    }
+
+    public UsuarioDTO login(String email, String password) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!passwordEncoder.matches(password, usuario.getPassword())) {
+            throw new RuntimeException("Contraseña incorrecta");
+        }
+
+        return convertToDTO(usuario);
     }
 
 }

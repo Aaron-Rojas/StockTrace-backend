@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.stocktrack.model.Usuario;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository <Usuario, Long> {
-    
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+    java.util.Optional<Usuario> findByEmail(String email);
 }

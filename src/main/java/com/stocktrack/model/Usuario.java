@@ -18,9 +18,10 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @jakarta.persistence.Column(name = "nombre_completo")
     private String nombreCompleto;
     private String email;
-    private String password; 
+    private String password;
     private String rol; // Ej: "Admin", "Operario"
 
 }
