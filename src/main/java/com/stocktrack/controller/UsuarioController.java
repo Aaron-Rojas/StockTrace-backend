@@ -17,7 +17,7 @@ import com.stocktrack.services.UsuarioService;
 @RequestMapping("/usuarios")
 @CrossOrigin(origins = "*")
 public class UsuarioController {
-    
+
     @Autowired
     private UsuarioService usuarioService;
 
@@ -29,5 +29,12 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTO> getUsuarioById(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.getUsuarioById(id));
+    }
+
+    @org.springframework.web.bind.annotation.PostMapping
+    public ResponseEntity<UsuarioDTO> crearUsuario(
+            @org.springframework.web.bind.annotation.RequestBody UsuarioDTO usuarioDTO) {
+        UsuarioDTO nuevoUsuario = usuarioService.crearUsuario(usuarioDTO);
+        return new ResponseEntity<>(nuevoUsuario, org.springframework.http.HttpStatus.CREATED);
     }
 }
